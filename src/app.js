@@ -45,6 +45,7 @@ app.get(
   "/api/barber/all_appointment_requests/:u_id/:uar_status",
   CtBarber.getAllAppointmentRequestsForBarber
 );
+app.get("/api/barber/get_timings/:b_id", CtBarber.getBarberTimings);
 app.get(
   "/api/user/all_appointment_requests/:u_id/:uar_status",
   CtUser.getAllAppointmentRequests
@@ -61,6 +62,7 @@ app.put(
   CtBarber.updateAppointmentRequestStatus
 );
 app.put("/api/user/update_user_info/:u_id", CtUser.updateUserInfo);
+app.put("/api/barber/update_timings/:b_id", CtBarber.updateBarberTimings);
 
 app.delete(
   "/api/user/cancel_appointment/:uar_id",

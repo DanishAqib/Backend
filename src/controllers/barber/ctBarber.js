@@ -117,6 +117,58 @@ class CtBarber {
       console.error(err.message);
     }
   }
+
+  static async updateBarberTimings(req, res) {
+    try {
+      const { b_id } = req.params;
+      const { bt_start_time, bt_end_time, bt_interval } = req.body;
+      const barber = await pool.query(
+        `SELECT * FROM users WHERE u_id = '${b_id}'`
+      );
+      if (barber.rows.length === 0) {
+        return res.status(400).json("Barber does not exist");
+      }
+      const barberTimings = await pool.query(
+        `SELECT * FROM barber_timings WHERE b_id = '${b_id}'`
+      );
+      if (barberTimings.rows.length === 0) {
+        await pool.query(
+          `INSERT INTO barber_timings (b_id, bt_start_time, bt_end_time, bt_interval) VALUES ('${b_id}', '${bt_start_time}', '${bt_end_time}', '${bt_interval}')`
+        );
+      } else {
+        await pool.query(
+          `UPDATE barber_timings SET bt_start_time = '${bt_start_time}', bt_end_time = '${bt_end_time}', bt_interval = '${bt_interval}' WHERE b_id = '${b_id}'`
+        );
+      }
+      res.json("Barber timings updated");
+    } catch (err) {
+      console.error(err.message);
+    }
+  }
+
+  static async getBarberTimings(req, res) {
+    try {
+      const { b_id } = req.params;
+      const barber = await pool.query(
+        `SELECT * FROM users WHERE u_id = '${b_id}'`
+      );
+      if (barber.rows.length === 0) {
+        return res.status(400).json("Barber does not exist");
+      }
+      const barberTimings = await pool.query(
+        `SELECT * FROM barber_timings WHERE b_id = '${b_id}'`
+      );
+      if (barberTimings.rows.length === 0) {
+        return res.json({
+          message: "Barber timings not set",
+          status: 400,
+        });
+      }
+      res.json(barberTimings.rows[0]);
+    } catch (err) {
+      console.error(err.message);
+    }
+  }
 }
 
 module.exports = CtBarber;
